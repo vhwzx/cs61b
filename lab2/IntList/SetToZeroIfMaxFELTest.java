@@ -1,6 +1,8 @@
 package IntList;
 
 import static org.junit.Assert.*;
+
+import net.sf.saxon.functions.ConstantFunction;
 import org.junit.Test;
 
 public class SetToZeroIfMaxFELTest {
@@ -24,5 +26,12 @@ public class SetToZeroIfMaxFELTest {
         IntList L = IntList.of(5, 535, 35, 11, 10, 0);
         IntListExercises.setToZeroIfMaxFEL(L);
         assertEquals("0 -> 0 -> 35 -> 0 -> 10 -> 0", L.toString());
+    }
+
+    @Test
+    public void testfirstDigitEqualsLastDigit(){
+        int x = 10;
+        boolean actual = IntListExercises.firstDigitEqualsLastDigit(x);
+        assertEquals(false, actual);
     }
 }
