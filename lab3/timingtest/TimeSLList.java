@@ -37,10 +37,11 @@ public class TimeSLList {
                 test.addLast(1);
                 cur += 1;
             }
-            double start_time = System.currentTimeMillis()/1000;
+            double start_time = System.currentTimeMillis();
             for(int i = 0; i < M; i += 1)
                 test.getLast();
-            times.addLast(System.currentTimeMillis()/1000 - start_time);
+            double t = System.currentTimeMillis() - start_time;
+            times.addLast(t/1000);
             opCounts.addLast(M);
             N *= 2;
 

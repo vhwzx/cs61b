@@ -29,14 +29,15 @@ public class TimeAList {
         AList<Integer> test = new AList<>();
         int N = 1000;
         int cur = 0;
-        double start_time = System.currentTimeMillis()/1000;
+        double start_time = System.currentTimeMillis();
         while(N <= 128000){
             Ns.addLast(N);
             while(cur < N){
                 test.addLast(cur);
                 cur += 1;
             }
-            times.addLast(System.currentTimeMillis()/1000 - start_time);
+            double t = (System.currentTimeMillis() - start_time)/1000;
+            times.addLast(t);
             N *= 2;
 
         }
