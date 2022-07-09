@@ -3,7 +3,7 @@ package deque;
 import java.util.Iterator;
 import java.lang.Iterable;
 
-public class ArrayDeque<T> implements Iterable<T> {
+public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     private int head;
     private int tail;
     private T[] data;
@@ -17,6 +17,7 @@ public class ArrayDeque<T> implements Iterable<T> {
     public int size(){
         return tail - head;
     }
+
     private void resize(int size){
         T[] newdata = (T []) new Object[size];
         System.arraycopy(data, head, newdata, size/3, size());
