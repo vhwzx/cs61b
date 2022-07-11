@@ -1,6 +1,8 @@
 package capers;
 
 import java.io.File;
+import java.io.IOException;
+
 import static capers.Utils.*;
 
 /** A repository for Capers 
@@ -18,8 +20,7 @@ public class CapersRepository {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = null; // TODO Hint: look at the `join`
-                                            //      function in Utils
+    static final File CAPERS_FOLDER = join(CWD,".capers");
 
     /**
      * Does required filesystem operations to allow for persistence.
@@ -31,7 +32,18 @@ public class CapersRepository {
      *    - story -- file containing the current story
      */
     public static void setupPersistence() {
-        // TODO
+        if(!CAPERS_FOLDER.exists())
+            CAPERS_FOLDER.mkdir();
+        File f = join(CAPERS_FOLDER, "dogs");
+        if(!f.exists())
+            f.mkdir();
+        f = join(CAPERS_FOLDER, "story.txt");
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
@@ -40,7 +52,9 @@ public class CapersRepository {
      * @param text String of the text to be appended to the story
      */
     public static void writeStory(String text) {
-        // TODO
+        File f = join(CAPERS_FOLDER, "story.txt");
+        writeContents(f, readContents(f), text, "\n");
+        System.out.println(readContentsAsString(f));
     }
 
     /**
@@ -49,7 +63,9 @@ public class CapersRepository {
      * Also prints out the dog's information using toString().
      */
     public static void makeDog(String name, String breed, int age) {
-        // TODO
+        Dog d = new Dog(name, breed, age);
+        System.out.println(d.toString());
+        d.saveDog();
     }
 
     /**
@@ -60,5 +76,8 @@ public class CapersRepository {
      */
     public static void celebrateBirthday(String name) {
         // TODO
+        Dog d = Dog.fromFile(name);
+        d.haveBirthday();
+        d.saveDog();
     }
 }
