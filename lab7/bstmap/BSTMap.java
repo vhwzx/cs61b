@@ -20,13 +20,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     }
     private BSTNode<K, V> root;
     private int size;
-
-    public void BSTMap(){
-        root = null;
-        int size = 0;
-    }
-
-
+    
     private String keys2string(BSTNode<K, V> node){
         if(node == null)
             return "";
@@ -108,7 +102,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     }
 
     @Override
-    public Set keySet() {
+    public Set<K> keySet() {
         return null;
     }
 
@@ -123,7 +117,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<K> iterator() {
         return null;
     }
 }
