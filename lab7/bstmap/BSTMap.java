@@ -1,9 +1,11 @@
 package bstmap;
 
+import org.apache.commons.math3.stat.descriptive.moment.Skewness;
+
 import java.util.Iterator;
 import java.util.Set;
 
-public class BSTMap<K extends Comparable<K>, V> implements Map61B{
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     private class BSTNode<K extends  Comparable<K>, v>{
         private K key;
         private V value;
@@ -38,7 +40,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B{
         return s.toString();
     }
     public void printInOrder(){
-        System.out.println(root);
+        System.out.println(keys2string(root));
     }
 
     @Override
@@ -58,14 +60,14 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B{
         return find(node.right, key);
     }
     @Override
-    public boolean containsKey(Object key) {
-        BSTNode<K, V> res = find(root, (K) key);
+    public boolean containsKey(K key) {
+        BSTNode<K, V> res = find(root, key);
         return res != null;
     }
 
     @Override
-    public Object get(Object key) {
-        BSTNode<K, V> res = find(root, (K) key);
+    public V get(K key) {
+        BSTNode<K, V> res = find(root, key);
         if(res == null)
             return null;
         return res.value;
@@ -96,12 +98,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B{
         }
     }
     @Override
-    public void put(Object key, Object value) {
+    public void put(K key, V value) {
         size += 1;
         if(root == null)
-            root = new BSTNode<>((K) key, (V) value);
+            root = new BSTNode<>(key, value);
         else{
-            put(root, (K) key, (V) value);
+            put(root, key, value);
         }
     }
 
@@ -111,12 +113,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B{
     }
 
     @Override
-    public Object remove(Object key) {
+    public V remove(K key) {
         return null;
     }
 
     @Override
-    public Object remove(Object key, Object value) {
+    public V remove(K key, V value) {
         return null;
     }
 
