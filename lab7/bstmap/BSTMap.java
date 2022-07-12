@@ -20,7 +20,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>{
     }
     private BSTNode<K, V> root;
     private int size;
-    
+
     private String keys2string(BSTNode<K, V> node){
         if(node == null)
             return "";
