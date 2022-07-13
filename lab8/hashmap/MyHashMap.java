@@ -189,10 +189,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if(node == null)
             return null;
         else {
-            buckets[hash(key)].remove(key);
+            V value = node.value;
+            boolean res = buckets[hash(key)].remove(node);
             size -= 1;
             keys.remove(key);
-            return node.value;
+            return value;
         }
     }
 
