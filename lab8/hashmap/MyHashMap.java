@@ -183,30 +183,32 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         return keys;
     }
 
+
+
+    private V remove(K key, Node node){
+        V value = node.value;
+        boolean res = buckets[hash(key)].remove(node);
+        size -= 1;
+        keys.remove(key);
+        return value;
+    }
+
     @Override
     public V remove(K key) {
         Node node = find(key);
         if(node == null)
             return null;
-        else {
-            V value = node.value;
-            boolean res = buckets[hash(key)].remove(node);
-            size -= 1;
-            keys.remove(key);
-            return value;
-        }
+        else
+            return remove(key, node);
     }
 
     @Override
     public V remove(K key, V value) {
-        V actual_value = get(key);
-        if(value.equals(actual_value)){
-            buckets[hash(key)].remove(key);
-            size -= 1;
-            keys.remove(key);
-            return value;
-        }
-        return null;
+        Node node = find(key);
+        if(node == null)
+            return null;
+        else
+            return remove(key, node);
     }
 
     @Override

@@ -158,4 +158,25 @@ public class TestMyHashMap {
         assertEquals(345, studentIDs.get("evil alan").intValue());
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
     }
+
+    @Test
+    public void keysetTest(){
+        MyHashMap<String, Integer> x = new MyHashMap<>(2);
+        x.put("a", 1);
+        x.put("b", 2);
+        x.put("c", 3);
+        x.put("a", 0);
+        assertTrue(x.containsKey("a"));
+        assertTrue(x.containsKey("b"));
+        assertFalse(x.containsKey("z"));
+        assertTrue(0 ==  x.get("a"));
+        assertTrue(x.size() == 3);
+        x.remove("a", 0);
+        assertFalse(x.containsKey("a"));
+        x.clear();
+        assertFalse(x.containsKey("a"));
+        System.out.println(x.keySet().toString());
+        System.out.println(x.size());
+
+    }
 }
