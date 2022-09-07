@@ -1,5 +1,8 @@
 package gitlet;
 
+import java.util.Arrays;
+import java.util.List;
+
 /** Driver class for Gitlet, a subset of the Git version-control system.
  *  @author TODO
  */
@@ -13,12 +16,20 @@ public class Main {
         String firstArg = args[0];
         switch(firstArg) {
             case "init":
-                // TODO: handle the `init` command
+                Repository.init();
                 break;
             case "add":
                 // TODO: handle the `add [filename]` command
+                Repository.add(List.of(Arrays.copyOfRange(args, 1, args.length)));
                 break;
-            // TODO: FILL THE REST IN
+            case "status":
+                Repository.status();
+                break;
+            case "rm":
+                break;
+            default:
+                throw new GitletException("no such a command");
+
         }
     }
 }

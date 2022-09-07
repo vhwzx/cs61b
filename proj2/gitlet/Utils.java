@@ -103,6 +103,21 @@ class Utils {
             throw new IllegalArgumentException(excp.getMessage());
         }
     }
+    static byte[] readContents(String file){return readContents(new File(file));}
+
+    static boolean fileExists(File file){return file.exists();}
+    static boolean fileExists(String file){return fileExists(new File(file));}
+
+    static boolean isSubdir(File maybeChild, File possibleParent){
+        File parent = maybeChild.getParentFile();
+        while ( parent != null ) {
+            if ( parent.equals( possibleParent ) )
+                return true;
+            parent = parent.getParentFile();
+        }
+        return false;
+
+    }
 
     /** Return the entire contents of FILE as a String.  FILE must
      *  be a normal file.  Throws IllegalArgumentException
