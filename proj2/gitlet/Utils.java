@@ -14,9 +14,9 @@ import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Formatter;
-import java.util.List;
+import java.util.*;
+
+import static gitlet.Repository.*;
 
 
 /** Assorted utilities.
@@ -84,9 +84,10 @@ class Utils {
      *  Returns true if FILE was deleted, and false otherwise.  Refuses
      *  to delete FILE and throws IllegalArgumentException unless the
      *  directory designated by FILE also contains a directory named .gitlet. */
-    static boolean restrictedDelete(String file) {
-        return restrictedDelete(new File(file));
+    static boolean restrictedDelete(String file) {return restrictedDelete(new File(file));
     }
+
+    static boolean restrictedDelete(Blob blob) {return restrictedDelete(blob.getPath());}
 
     /* READING AND WRITING FILE CONTENTS */
 
@@ -95,6 +96,7 @@ class Utils {
      *  in case of problems. */
     static byte[] readContents(File file) {
         if (!file.isFile()) {
+            System.out.println(file);
             throw new IllegalArgumentException("must be a normal file");
         }
         try {
@@ -109,6 +111,9 @@ class Utils {
      *  in case of problems. */
     static String readContentsAsString(File file) {
         return new String(readContents(file), StandardCharsets.UTF_8);
+    }
+    static String readContentsAsString(Blob blob){
+        return new String(blob.getContent(), StandardCharsets.UTF_8);
     }
 
     /** Write the result of concatenating the bytes in CONTENTS to FILE,
@@ -151,10 +156,47 @@ class Utils {
             throw new IllegalArgumentException(excp.getMessage());
         }
     }
+    static HashMap<String, String> readBRANCHES(){
+        return (HashMap<String, String>)readObject(join(GITLET_DIR, "BRANCHES"), HashMap.class);
+    }
+
+    static String readBRANCH(){return (String) readObject(join(GITLET_DIR, "BRANCH"), String.class);}
+
+    static StageArea readStageArea(){ return (StageArea) readObject(join(GITLET_DIR, "STAGE_AREA"), StageArea.class);}
+
+    static Commit readCommit(String CommitID) {return (Commit) readObject(join(COMMIT_DIR, CommitID), Commit.class);}
+
+    static String readHEAD() {return (String) readObject(join(GITLET_DIR, "HEAD"), String.class);}
+
+    static Blob readBlob(String id){return (Blob) readObject(join(File_DIR, id), Blob.class);}
 
     /** Write OBJ to FILE. */
     static void writeObject(File file, Serializable obj) {
         writeContents(file, serialize(obj));
+    }
+
+    static void writeBRANCHES(HashMap<String, String> BRANCHES){writeObject(join(GITLET_DIR, "BRANCHES"), BRANCHES);}
+
+    static void writeBRANCH(String BRANCH){writeObject(join(GITLET_DIR, "BRANCH"), BRANCH);}
+
+    static void writeStageArea(StageArea STAGE_AREA) {writeObject(join(GITLET_DIR, "STAGE_AREA"), STAGE_AREA);}
+
+    static void writeCommit(Commit c, String CommitID){writeObject(join(COMMIT_DIR, CommitID), c);}
+
+    static void writeHEAD(String HEAD) {writeObject(join(GITLET_DIR, "HEAD"), HEAD);}
+
+    static void writeBlob(Blob blob){ writeObject(join(File_DIR, blob.getid()), blob);}
+
+    static void restoreFile(String id){
+        Blob blob = readBlob(id);
+        writeContents(join(CWD, blob.getPath()), blob.getContent());
+    }
+    static void restoreFile(Blob blob){
+        writeContents(join(CWD, blob.getPath()), blob.getContent());
+    }
+
+    static void restoreFile(String filepath, Blob blob){
+        writeContents(join(CWD, filepath), blob.getContent());
     }
 
     /* DIRECTORIES */
@@ -191,14 +233,14 @@ class Utils {
     /* OTHER FILE UTILITIES */
 
     /** Return the concatentation of FIRST and OTHERS into a File designator,
-     *  analogous to the {@link java.nio.file.Paths.#get(String, String[])}
+     *  analogous to the {link java.nio.file.Paths.#get(String, String[])}
      *  method. */
     static File join(String first, String... others) {
         return Paths.get(first, others).toFile();
     }
 
     /** Return the concatentation of FIRST and OTHERS into a File designator,
-     *  analogous to the {@link java.nio.file.Paths.#get(String, String[])}
+     *  analogous to the {link java.nio.file.Paths.#get(String, String[])}
      *  method. */
     static File join(File first, String... others) {
         return Paths.get(first.getPath(), others).toFile();
@@ -220,6 +262,12 @@ class Utils {
         }
     }
 
+    static void check_parms(String[] args, int low){
+        int L = args.length;
+        if(L < low)
+            throw error("not enough parm");
+    }
+
 
 
     /* MESSAGES AND ERROR REPORTING */
@@ -235,5 +283,38 @@ class Utils {
     static void message(String msg, Object... args) {
         System.out.printf(msg, args);
         System.out.println();
+    }
+
+    static void exit_message(String msg){
+        message(msg);
+        System.exit(0);
+    }
+
+    static Set<String> combine(Set<String>... s){
+        Set<String> files = new HashSet<>();
+        for(Set<String> si : s){
+            files.addAll(si);
+        }
+        return files;
+    }
+
+    static String shortID(String id){
+        if(id.length() == UID_LENGTH){
+            return id;
+        }
+        if(id.length() > UID_LENGTH)
+            throw error("no such commit id");
+        int count = 0;
+        String res = "";
+        String[] commits = COMMIT_DIR.list();
+        for(String s : commits){
+            if(s.startsWith(id)){
+                count += 1;
+                res = s;
+            }
+        }
+        if(count == 1)
+            return res;
+        throw error("no such commit id");
     }
 }
